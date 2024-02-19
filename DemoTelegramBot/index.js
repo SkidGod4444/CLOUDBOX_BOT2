@@ -175,7 +175,7 @@ bot.on("message", async (msg) => {
     const msg_id = msg.message_id;
 
     // Send a random message
-    sendRandomMessage(chatId, chatId, {
+    bot.sendMessage(chatId, chatId, {
         reply_to_message_id: msg_id,
     });
 });
