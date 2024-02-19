@@ -148,10 +148,14 @@ function sendRandomMessage(chatId, userInput) {
         // Send a random joke
         const randomIndex = Math.floor(Math.random() * jokes.length);
         const randomJoke = jokes[randomIndex];
-        bot.sendMessage(chatId, randomJoke);
+        bot.sendMessage(chatId, randomJoke, {
+        reply_to_message_id: msg_id,
+    });
     } else {
         // Send the user input as it is
-        bot.sendMessage(chatId, userInput);
+        bot.sendMessage(chatId, userInput, {
+        reply_to_message_id: msg_id,
+    });
     }
 }
 
@@ -175,9 +179,7 @@ bot.on("message", async (msg) => {
     const msg_id = msg.message_id;
 
     // Send a random message
-    bot.sendMessage(chatId, chatId, {
-        reply_to_message_id: msg_id,
-    });
+    sendRandomMessage(chatId, userInput)
 });
 
 module.exports = app;
