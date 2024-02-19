@@ -142,7 +142,7 @@ const jokes = [
 ];
 
 // Function to send a random message
-function sendRandomMessage(chatId, userInput) {
+function sendRandomMessage(chatId, userInput, msg_id) {
     const randomNumber = Math.random();
     if (randomNumber < 2) {
         // Send a random joke
@@ -179,7 +179,7 @@ bot.on("message", async (msg) => {
     const msg_id = msg.message_id;
 
     // Send a random message
-    sendRandomMessage(chatId, userInput)
+    sendRandomMessage(chatId, userInput, msg_id)
 });
 
 module.exports = app;
