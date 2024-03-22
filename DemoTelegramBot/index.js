@@ -173,12 +173,12 @@ const token =  process.env.BOT;
 
 const bot = new TelegramBot(token, { polling: true });
 
-bot.onText(/\/verify (.+)/, (msg, match) => {
+bot.onText(/\/verify (\d{10})/, (msg, match) => {
     const chatId = msg.chat.id;
     const code = match[1];
 
     // Replace the condition below with your code verification logic
-    if (code === chatId) {
+    if (code === chatId.toString()) {
         bot.sendMessage(chatId, "Verified successfully");
     } else {
         bot.sendMessage(chatId, "Verification failed");
