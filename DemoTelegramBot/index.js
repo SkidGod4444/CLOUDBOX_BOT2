@@ -190,6 +190,11 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(chatId, "Join Our Telegram Channel: https://t.me/cloudbox_storage");
 });
 
+bot.onText(/\/fix/, (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "Fixed Successfully!, Now You Can Use Our Services Go To The Website.");
+});
+
 bot.onText(/\/chatId/, (msg) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, chatId);
