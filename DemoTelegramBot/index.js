@@ -173,6 +173,23 @@ const token =  process.env.BOT;
 
 const bot = new TelegramBot(token, { polling: true });
 
+bot.onText(/\/verify (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const code = match[1];
+
+    // Replace the condition below with your code verification logic
+    if (code === chatId) {
+        bot.sendMessage(chatId, "Verified successfully");
+    } else {
+        bot.sendMessage(chatId, "Verification failed");
+    }
+});
+
+bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "Join Our Telegram Channel: https://t.me/cloudbox_storage");
+});
+
 bot.on("message", async (msg) => {
     const chatId = msg.chat.id;
     const userInput = msg.text;
