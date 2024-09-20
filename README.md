@@ -8,6 +8,7 @@ This project implements a Telegram bot utilizing Cloudflare Workers technology. 
 - npm (Node Package Manager)
 - A Telegram Bot Token (obtain from BotFather on Telegram)
 - Cloudflare account with Workers enabled
+- OpenSSL (for generating secret)
 
 ## Setup
 
@@ -31,7 +32,13 @@ This project implements a Telegram bot utilizing Cloudflare Workers technology. 
      wrangler generate <project-name>
      ```
 
-   - Add your Telegram Bot Token and other necessary secrets using Wrangler CLI:
+   - Generate a secret value for ENV_SECRET using OpenSSL:
+
+     ```
+     openssl rand -hex 69
+     ```
+
+   - Add your Telegram Bot Token and the generated secret using Wrangler CLI:
 
      ```
      wrangler secret put ENV_TOKEN
