@@ -31,17 +31,22 @@ This project implements a Telegram bot utilizing Cloudflare Workers technology. 
      wrangler generate <project-name>
      ```
 
-   - Add your Telegram Bot Token and other necessary secrets:
+   - Add your Telegram Bot Token and other necessary secrets using Wrangler CLI:
+
+     ```
+     wrangler secret put ENV_TOKEN
+     wrangler secret put ENV_SECRET
+     ```
+
+   - Your `wrangler.toml` file should look like this:
 
      ```toml
      main = "index.js"
      account_id = "your-cf-account-id"
      workers_dev = true
-
-     [vars]
-     ENV_TOKEN = "your-telegram-bot-token"
-     ENV_SECRET = "your-secret-key"
      ```
+
+   Note: The ENV_TOKEN and ENV_SECRET are now securely stored as secrets and not visible in the wrangler.toml file.
 
 4. Deploy to Cloudflare Workers:
    ```
