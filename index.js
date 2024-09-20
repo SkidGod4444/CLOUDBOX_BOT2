@@ -1,244 +1,359 @@
-const TelegramBot = require("node-telegram-bot-api");
-const express = require("express");
-const app = express();
-const axios = require("axios");
+/**
+ * CREDITS: https://l.devwtf.in/cloudboxbot2
+ */
 
-// Hindi jokes
-const jokes = [
-  "Why was the math book sad? Because it had too many problems.",
-  "What do you call a fake noodle? An Impasta.",
-  "Why did the scarecrow win an award? Because he was outstanding in his field.",
-  "Parallel lines have so much in common. It’s a shame they’ll never meet.",
-  "Why don’t skeletons fight each other? They don’t have the guts.",
-  "What did one ocean say to the other ocean? Nothing, they just waved.",
-  "Why don’t scientists trust atoms? Because they make up everything.",
-  "What did one hat say to the other? You stay here, I’ll go on ahead.",
-  "How do you organize a space party? You planet.",
-  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
-  "Why did the tomato turn red? Because it saw the salad dressing.",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
-  "What do you get when you cross a snowman with a vampire? Frostbite.",
-  "How does a penguin build its house? Igloos it together.",
-  "Why did the bicycle fall over? Because it was two-tired.",
-  "What do you call a bear with no teeth? A gummy bear.",
-  "What did one toilet say to the other toilet? You look flushed.",
-  "What did the grape say when it got stepped on? Nothing, it just let out a little wine.",
-  "Why did the scarecrow get promoted? Because he was outstanding in his field.",
-  "Why did the tomato turn red? Because it saw the salad dressing.",
-  "What do you get when you cross a snowman with a vampire? Frostbite.",
-  "Why don’t skeletons fight each other? They don’t have the guts.",
-  "Why don’t scientists trust atoms? Because they make up everything.",
-  "What did one ocean say to the other ocean? Nothing, they just waved.",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
-  "What did one hat say to the other? You stay here, I’ll go on ahead.",
-  "How do you organize a space party? You planet.",
-  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
-  "What did the buffalo say when his son left? Bison.",
-  "Why couldn't the leopard play hide and seek? Because he was always spotted.",
-  "What’s orange and sounds like a parrot? A carrot.",
-  "Why did the scarecrow win an award? Because he was outstanding in his field.",
-  "What do you call a pig that does karate? A pork chop.",
-  "What do you call fake spaghetti? An impasta.",
-  "Why did the bicycle fall over? Because it was two-tired.",
-  "Why did the tomato turn red? Because it saw the salad dressing.",
-  "What do you call a bear with no teeth? A gummy bear.",
-  "Why did the scarecrow get promoted? Because he was outstanding in his field.",
-  "Why don't scientists trust atoms? Because they make up everything!",
-  "What do you get when you cross a snowman and a vampire? Frostbite!",
-  "How do you organize a space party? You planet!",
-  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
-  "Why did the mushroom go to the party? Because he was a fungi!",
-  "What do you call cheese that isn't yours? Nacho cheese!",
-  "How does a penguin build its house? Igloos it together!",
-  "What do you call a man with a rubber toe? Roberto!",
-  "Why couldn't the bicycle stand up by itself? It was two tired!",
-  "What do you call a fat psychic? A four-chin teller!",
-  "Why don't skeletons fight each other? They don't have the guts!",
-  "What did one ocean say to the other ocean? Nothing, they just waved!",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
-  "Why was the math book sad? Because it had too many problems!",
-  "What's orange and sounds like a parrot? A carrot!",
-  "What's a pirate's favorite letter? You think it's R, but it be the C!",
-  "What do you get when you cross a snowman with a vampire? Frostbite!",
-  "What do you call a pile of cats? A meowtain!",
-  "Why don't scientists trust atoms? Because they make up everything!",
-  "What do you call a fake noodle? An impasta!",
-  "What do you call a fish with no eyes? Fsh!",
-  "How does a penguin build its house? Igloos it together!",
-  "What did one hat say to the other hat? You stay here, I'll go on ahead!",
-  "What do you call a bear with no teeth? A gummy bear!",
-  "What do you call a shoe made of a banana? A slipper!",
-  "What do you get when you cross a snowman and a vampire? Frostbite!",
-  "What do you call a guy lying on your doorstep? Matt!",
-  "Why couldn't the bicycle stand up by itself? It was two tired!",
-  "What did the pirate say on his 80th birthday? Aye Matey!",
-  "Why did the tomato turn red? Because it saw the salad dressing!",
-  "How do you organize a space party? You planet!",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
-  "What did one hat say to the other hat? You stay here, I'll go on ahead!",
-  "Why did the scarecrow win an award? Because he was outstanding in his field!",
-  "What do you call cheese that isn't yours? Nacho cheese!",
-  "Why couldn't the leopard play hide and seek? Because he was always spotted!",
-  "What’s orange and sounds like a parrot? A carrot!",
-  "Why did the bicycle fall over? Because it was two-tired!",
-  "What did one ocean say to the other ocean? Nothing, they just waved!",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
-  "What did one hat say to the other hat? You stay here, I'll go on ahead!",
-  "How do you organize a space party? You planet!",
-  "What do you call a man with a rubber toe? Roberto!",
-  "Why couldn't the bicycle stand up by itself? It was two tired!",
-  "What do you get when you cross a snowman with a vampire? Frostbite!",
-  "What do you call a fake noodle? An impasta!",
-  "What did one hat say to the other? You stay here, I’ll go on ahead.",
-  "What’s orange and sounds like a parrot? A carrot.",
-  "Why did the tomato turn red? Because it saw the salad dressing.",
-  "What do you get when you cross a snowman with a vampire? Frostbite.",
-  "Why don’t scientists trust atoms? Because they make up everything.",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
-  "What did one hat say to the other? You stay here, I’ll go on ahead.",
-  "How do you organize a space party? You planet.",
-  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
-  "Why did the buffalo say when his son left? Bison.",
-  "Why couldn't the leopard play hide and seek? Because he was always spotted.",
-  "What’s orange and sounds like a parrot? A carrot.",
-  "Why did the scarecrow win an award? Because he was outstanding in his field.",
-  "What do you call a pig that does karate? A pork chop.",
-  "What do you call fake spaghetti? An impasta.",
-  "Why did the bicycle fall over? Because it was two-tired.",
-  "Why did the tomato turn red? Because it saw the salad dressing.",
-  "What do you call a bear with no teeth? A gummy bear.",
-  "Why did the scarecrow get promoted? Because he was outstanding in his field.",
-  "Why don't scientists trust atoms? Because they make up everything!",
-  "What do you get when you cross a snowman and a vampire? Frostbite!",
-  "How do you organize a space party? You planet!",
-  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
-  "Why did the mushroom go to the party? Because he was a fungi!",
-  "What do you call cheese that isn't yours? Nacho cheese!",
-  "How does a penguin build its house? Igloos it together!",
-  "What do you call a man with a rubber toe? Roberto!",
-  "Why couldn't the bicycle stand up by itself? It was two tired!",
-  "What do you call a fat psychic? A four-chin teller!",
-  "Why don't skeletons fight each other? They don't have the guts!",
-  "What did one ocean say to the other ocean? Nothing, they just waved!",
-  "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
-  "Why was the math book sad? Because it had too many problems!",
-  "What's orange and sounds like a parrot? A carrot!",
-  "What's a pirate's favorite letter? You think it's R, but it be the C!",
-  "What do you get when you cross a snowman with a vampire? Frostbite!",
-  "What do you call a pile of cats? A meowtain!",
-  "Why don't scientists trust atoms? Because they make up everything!",
-  "What do you call a fake noodle? An impasta!",
-  "What do you call a fish with no eyes? Fsh!",
-  "How does a penguin build its house? Igloos it together!",
-  "What did one hat say to the other hat? You stay here, I'll go on ahead!",
-  "What do you call a bear with no teeth? A gummy bear!",
-  "What do you call a shoe made of a banana? A slipper!",
-  "What do you get when you cross a snowman and a vampire? Frostbite!",
-  "What do you call a guy lying on your doorstep? Matt!",
-  "Why couldn't the bicycle stand up by itself? It was two tired!",
-  "What did the pirate say on his 80th birthday? Aye Matey!",
-  "SUBSCRIBE MY MASTERS YT CHANNEL: https://www.youtube.com/channel/UC5pAe0zPiPCtFSZn5NwSvmg",
-];
+const TOKEN = ENV_TOKEN; // Get it from @BotFather https://core.telegram.org/bots#6-botfather
+const WEBHOOK = "/endpoint";
+const SECRET = ENV_SECRET; // A-Z, a-z, 0-9, _ and -
 
-app.use(express.json());
-
-const token = process.env.BOT;
-const url = "https://cloudbox-bot2.onrender.com";
-const port = 3350;
-
-const bot = new TelegramBot(token, { polling: true });
-
-// This informs the Telegram servers of the new webhook. Comment this line if using polling.
-bot.setWebHook(`${url}/bot${token}`);
-
-app.post(`/bot${token}`, (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
-// Function to send a random message
-function sendRandomMessage(chatId, userInput, msg_id) {
-  const randomNumber = Math.random();
-  if (randomNumber < 2) {
-    // Send a random joke
-    const randomIndex = Math.floor(Math.random() * jokes.length);
-    const randomJoke = jokes[randomIndex];
-    bot.sendMessage(chatId, randomJoke, {
-      reply_to_message_id: msg_id,
-    });
+/**
+ * Wait for requests to the worker
+ */
+addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  if (url.pathname === WEBHOOK) {
+    event.respondWith(handleWebhook(event));
+  } else if (url.pathname === "/registerWebhook") {
+    event.respondWith(registerWebhook(event, url, WEBHOOK, SECRET));
+  } else if (url.pathname === "/unRegisterWebhook") {
+    event.respondWith(unRegisterWebhook(event));
   } else {
-    // Send the user input as it is
-    bot.sendMessage(chatId, userInput, {
-      reply_to_message_id: msg_id,
-    });
+    event.respondWith(new Response("No handler for this request"));
+  }
+});
+
+/**
+ * Handle requests to WEBHOOK
+ * https://core.telegram.org/bots/api#update
+ */
+async function handleWebhook(event) {
+  // Check secret
+  if (event.request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== SECRET) {
+    return new Response("Unauthorized", { status: 403 });
+  }
+
+  // Read request body synchronously
+  const update = await event.request.json();
+  // Deal with response asynchronously
+  event.waitUntil(onUpdate(update));
+
+  return new Response("Ok");
+}
+
+/**
+ * Handle incoming Update
+ * supports messages and callback queries (inline button presses)
+ * https://core.telegram.org/bots/api#update
+ */
+async function onUpdate(update) {
+  if ("message" in update) {
+    await onMessage(update.message);
+  }
+  if ("callback_query" in update) {
+    await onCallbackQuery(update.callback_query);
   }
 }
 
-app.get("/", (req, res) => {
-  res.send("Bot is alive");
-});
+/**
+ * Set webhook to this worker's url
+ * https://core.telegram.org/bots/api#setwebhook
+ */
+async function registerWebhook(event, requestUrl, suffix, secret) {
+  // https://core.telegram.org/bots/api#setwebhook
+  const webhookUrl = `${requestUrl.protocol}//${requestUrl.hostname}${suffix}`;
+  const r = await (
+    await fetch(apiUrl("setWebhook", { url: webhookUrl, secret_token: secret }))
+  ).json();
+  return new Response("ok" in r && r.ok ? "Ok" : JSON.stringify(r, null, 2));
+}
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+/**
+ * Remove webhook
+ * https://core.telegram.org/bots/api#setwebhook
+ */
+async function unRegisterWebhook(event) {
+  const r = await (await fetch(apiUrl("setWebhook", { url: "" }))).json();
+  return new Response("ok" in r && r.ok ? "Ok" : JSON.stringify(r, null, 2));
+}
 
-bot.on("polling_error", (error) => {
-  console.error("Polling error occurred:", error.code);
-});
-
-bot.onText(/\/verify (\d{10})/, (msg, match) => {
-  const chatId = msg.chat.id;
-  const code = match[1];
-
-  // Replace the condition below with your code verification logic
-  if (code === chatId.toString()) {
-    bot.sendMessage(chatId, "Verified successfully");
-  } else {
-    bot.sendMessage(chatId, "Verification failed");
+/**
+ * Return url to telegram api, optionally with parameters added
+ */
+function apiUrl(methodName, params = null) {
+  let query = "";
+  if (params) {
+    query = "?" + new URLSearchParams(params).toString();
   }
-});
+  return `https://api.telegram.org/bot${TOKEN}/${methodName}${query}`;
+}
 
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(
-    chatId,
-    "Join Our Telegram Channel: https://t.me/cloudbox_storage"
+/**
+ * Send plain text message
+ * https://core.telegram.org/bots/api#sendmessage
+ */
+async function sendPlainText(chatId, text) {
+  return (
+    await fetch(
+      apiUrl("sendMessage", {
+        chat_id: chatId,
+        text,
+      })
+    )
+  ).json();
+}
+
+/**
+ * Send text message formatted with MarkdownV2-style
+ * Keep in mind that any markdown characters _*[]()~`>#+-=|{}.! that
+ * are not part of your formatting must be escaped. Incorrectly escaped
+ * messages will not be sent. See escapeMarkdown()
+ * https://core.telegram.org/bots/api#sendmessage
+ */
+async function sendMarkdownV2Text(chatId, text) {
+  return (
+    await fetch(
+      apiUrl("sendMessage", {
+        chat_id: chatId,
+        text,
+        parse_mode: "MarkdownV2",
+      })
+    )
+  ).json();
+}
+
+/**
+ * Escape string for use in MarkdownV2-style text
+ * if `except` is provided, it should be a string of characters to not escape
+ * https://core.telegram.org/bots/api#markdownv2-style
+ */
+function escapeMarkdown(str, except = "") {
+  const all = "_*[]()~`>#+-=|{}.!\\"
+    .split("")
+    .filter((c) => !except.includes(c));
+  const regExSpecial = "^$*+?.()|{}[]\\";
+  const regEx = new RegExp(
+    "[" +
+      all.map((c) => (regExSpecial.includes(c) ? "\\" + c : c)).join("") +
+      "]",
+    "gim"
   );
-});
+  return str.replace(regEx, "\\$&");
+}
 
-bot.onText(/\/fix/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(
+/**
+ * Send a message with a single button
+ * `button` must be an button-object like `{ text: 'Button', callback_data: 'data'}`
+ * https://core.telegram.org/bots/api#sendmessage
+ */
+async function sendInlineButton(chatId, text, button) {
+  return sendInlineButtonRow(chatId, text, [button]);
+}
+
+/**
+ * Send a message with buttons, `buttonRow` must be an array of button objects
+ * https://core.telegram.org/bots/api#sendmessage
+ */
+async function sendInlineButtonRow(chatId, text, buttonRow) {
+  return sendInlineButtons(chatId, text, [buttonRow]);
+}
+
+/**
+ * Send a message with buttons, `buttons` must be an array of arrays of button objects
+ * https://core.telegram.org/bots/api#sendmessage
+ */
+async function sendInlineButtons(chatId, text, buttons) {
+  return (
+    await fetch(
+      apiUrl("sendMessage", {
+        chat_id: chatId,
+        reply_markup: JSON.stringify({
+          inline_keyboard: buttons,
+        }),
+        text,
+        parse_mode: "MarkdownV2",
+      })
+    )
+  ).json();
+}
+
+/**
+ * Answer callback query (inline button press)
+ * This stops the loading indicator on the button and optionally shows a message
+ * https://core.telegram.org/bots/api#answercallbackquery
+ */
+async function answerCallbackQuery(callbackQueryId, text = null) {
+  const data = {
+    callback_query_id: callbackQueryId,
+  };
+  if (text) {
+    data.text = text;
+  }
+  return (await fetch(apiUrl("answerCallbackQuery", data))).json();
+}
+
+/**
+ * Handle incoming callback_query (inline button press)
+ * https://core.telegram.org/bots/api#message
+ */
+async function onCallbackQuery(callbackQuery) {
+  if (callbackQuery.data === "back_to_main") {
+    await sendHelpMessage(callbackQuery.message.chat.id);
+  } else {
+    await sendMarkdownV2Text(
+      callbackQuery.message.chat.id,
+      escapeMarkdown(`You pressed the button with data=\`${callbackQuery.data}\``, '`')
+    );
+  }
+  return answerCallbackQuery(callbackQuery.id, "Button press acknowledged!");
+}
+
+/**
+ * Handle incoming Message
+ * https://core.telegram.org/bots/api#message
+ */
+async function onMessage(message) {
+  try {
+    if (message.text.startsWith("/start") || message.text.startsWith("/help")) {
+      return await sendHelpMessage(message.chat.id);
+    } else if (message.text.startsWith("/support")) {
+      return await sendSupportButtons(message.chat.id);
+    } else if (message.text.startsWith("/contact")) {
+      return await sendContactButtons(message.chat.id);
+    } else if (message.text.startsWith("/verify")) {
+      return await verifyCode(message.chat.id, message);
+    } else if (message.text.startsWith("/source")) {
+      return await sendSourceButtons(message.chat.id);
+    } else {
+      return await sendMarkdownV2Text(
+        message.chat.id,
+        escapeMarkdown(`*Sorry command not found:* \`${message.text}\`\nUse /help to see available commands.`, '*`')
+      );
+    }
+  } catch (error) {
+    console.error("Error in onMessage:", error);
+    return sendMarkdownV2Text(
+      message.chat.id,
+      escapeMarkdown("Sorry, an error occurred while processing your message.")
+    );
+  }
+}
+
+async function sendHelpMessage(chatId) {
+  return await sendMarkdownV2Text(
     chatId,
-    "Fixed Successfully!, Now You Can Use Our Services Go To The Website."
+    escapeMarkdown(
+      "*Welcome to CLOUDBOX!* 🚀\n\n" +
+      "I'm here to assist you with various tasks. Here's what I can do:\n\n" +
+      "`/help` - This message.\n" +
+      "/support - Join our support server for more help.\n" +
+      "/contact - Sends owners contact details.\n" +
+      "/verify - Verify your token.\n" +
+      "/source - Sends the source code.\n",
+      '*`'
+    )
   );
-});
+}
 
-bot.onText(/\/chatId/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, chatId);
-});
+async function verifyCode(chatId, message) {
+  const parts = message.text.split(' ');
+  if (parts.length !== 2) {
+    return await sendMarkdownV2Text(chatId, escapeMarkdown("Please use the format: `/verify <code>`", '`'));
+  }
 
-bot.on("message", async (msg) => {
-  const chatId = msg.chat.id;
-  const userInput = msg.text;
-  const msg_id = msg.message_id;
+  const code = parts[1].trim();
+  if (!/^\d+$/.test(code)) {
+    return await sendMarkdownV2Text(chatId, escapeMarkdown("The verification code should contain only numeric characters."));
+  }
 
-  // Send a random message
-  // bot.sendMessage(chatId, chatId)
-  sendRandomMessage(chatId, userInput, msg_id);
-});
+  await sendInlineButtons(
+    chatId,
+    escapeMarkdown(`Verified: ${code}, Now you can use our web app.`),
+    [
+      [
+        {
+          text: "Open Web App",
+          url: "https://cloud-box.devwtf.in/",
+        },
+        {
+          text: "Back to Menu",
+          callback_data: "back_to_main",
+        },
+      ],
+    ]
+  );
+}
 
-// Keep-alive mechanism
-setInterval(() => {
-  axios.get(url).catch(() => {});
-}, 5 * 60 * 1000); // Every 5 minutes
+function sendSupportButtons(chatId) {
+  return sendInlineButtonRow(
+    chatId,
+    escapeMarkdown("🚀 Welcome to the awesome CLOUDBOX community! 🌟"),
+    [
+      {
+        text: "Join community",
+        url: "https://t.me/cloudbox_storage",
+      },
+      {
+        text: "Back to Menu",
+        callback_data: "back_to_main",
+      },
+    ]
+  );
+}
 
-// Error handling for unhandled rejections and uncaught exceptions
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection:", reason);
-});
+function sendSourceButtons(chatId) {
+  return sendInlineButtons(
+    chatId,
+    escapeMarkdown("Explore our source code repositories, please give a star on github:"),
+    [
+      [
+        {
+          text: "CLOUDBOX_BOT",
+          url: "https://l.devwtf.in/cloudboxbot",
+        },
+        {
+          text: "CLOUDBOX_BOT2",
+          url: "https://l.devwtf.in/cloudboxbot2",
+        },
+      ],
+      [
+        {
+          text: "CLOUDBOX_WEB",
+          url: "https://git.new/PkJdogB",
+        },
+        {
+          text: "CLOUDBOX_API",
+          url: "https://l.devwtf.in/cloudboxapi",
+        },
+      ],
+    ]
+  );
+}
 
-process.on("uncaughtException", (error) => {
-  console.error("Uncaught Exception:", error);
-});
-module.exports = app;
+function sendContactButtons(chatId) {
+  return sendInlineButtons(
+    chatId,
+    escapeMarkdown("Contact the owner Saidev Dhal or explore our social media:"),
+    [
+      [
+        {
+          text: "TWITTER",
+          url: "https://dub.sh/saidev-twitter",
+        },
+        {
+          text: "LINKEDIN",
+          url: "https://dub.sh/saidev-linkedin",
+        },
+      ],
+      [
+        {
+          text: "INSTAGRAM",
+          url: "https://dub.sh/saidev-instagram",
+        },
+        {
+          text: "YOUTUBE",
+          url: "https://dub.sh/skidgod",
+        },
+      ],
+    ]
+  );
+}
